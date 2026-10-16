@@ -1,0 +1,25 @@
+{
+  "id": "./",
+  "name": "TiempoEsVida",
+  "short_name": "TiempoEsVida",
+  "description": "Descubre cuánto tiempo de tu vida cuesta una compra.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "display_override": [
+    "fullscreen",
+    "standalone"
+  ],
+  "orientation": "any",
+  "background_color": "#100d1d",
+  "theme_color": "#100d1d",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
