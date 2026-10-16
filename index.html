@@ -23,23 +23,7 @@
 <main>
 <section class="screen active" id="priceScreen" aria-labelledby="mainTitle"><div class="hero"><p class="eyebrow">El precio en tiempo</p><h1 id="mainTitle">¿Cuánto tiempo de tu vida cuesta?</h1><p>Convierte el precio de una compra en tiempo de trabajo.</p></div>
 <div class="panel"><form id="priceForm" novalidate><div class="field"><label for="productPrice">Precio del producto (€)</label><div class="pricewrap"><span aria-hidden="true">€</span><input id="productPrice" type="text" inputmode="decimal" autocomplete="off" placeholder="Ej. 49,95" aria-describedby="priceError"></div><p id="priceError" class="err" role="alert"></p></div><div class="actions"><button type="button" class="btn" id="clearPrice">Borrar precio</button></div><p class="subtle" style="margin:13px 0 0">Introduce el precio manualmente, usando coma o punto para los céntimos (por ejemplo, 25,99). El precio no se guarda al cerrar la aplicación.</p></form>
-<div id="resultCard" class="result" hidden aria-live="polite">
-  <p class="question">¿Cuánto tiempo de tu vida cuesta?</p>
-  <section style="padding:22px 14px;border:1px solid #a78bfa55;border-radius:18px;background:linear-gradient(145deg,#292044,#1a1530);">
-    <p class="total-label" style="text-transform:uppercase;letter-spacing:.12em;color:var(--accent2);">Esta compra te cuesta</p>
-    <div id="realTimeResult" class="duration" aria-label="Tiempo real contando los días libres"></div>
-    <p class="subtle" style="margin:10px 0 0">de tiempo real, contando tus días libres</p>
-  </section>
-  <div style="display:grid;grid-template-columns:1fr;gap:12px;margin-top:14px;text-align:left">
-    <section style="padding:17px;border:1px solid var(--line);border-radius:16px;background:#100d1d">
-      <p class="total-label">TIEMPO EN JORNADAS (DÍAS)</p><p id="timeResult" class="total-value"></p><p id="workTimeCaption" class="total-decimal"></p>
-    </section>
-    <section style="padding:17px;border:1px solid var(--line);border-radius:16px;background:#100d1d">
-      <p class="total-label">TIEMPO EN HORAS</p><p id="totalTimeResult" class="total-value"></p><p class="total-decimal">Total de trabajo acumulado</p>
-    </section>
-  </div>
-  <p id="decimalTimeResult" class="total-decimal" style="display:none"></p>
-</div></div>
+<div id="resultCard" class="result" hidden aria-live="polite"><p class="question">ESTA COMPRA TE CUESTA</p><section class="real-time"><p class="result-label">TIEMPO REAL</p><div id="realTimeResult" class="duration"></div><p class="real-caption">de tu vida, contando tus días libres</p></section><div class="result-details"><section class="result-detail"><p class="result-label">TIEMPO EN JORNADAS (DÍAS)</p><p id="timeResult" class="detail-value"></p><p id="workRemainder" class="detail-note"></p><p id="workBasis" class="detail-note"></p></section><section class="result-detail"><p class="result-label">TIEMPO EN HORAS</p><p id="totalTimeResult" class="detail-value"></p><p class="detail-note">Total de trabajo acumulado</p></section></div></div></div>
 </section>
 <section class="screen" id="settingsScreen" aria-labelledby="settingsTitle"><div class="panel"><p class="eyebrow" style="text-align:left">Personalización</p><h1 class="settings-title" id="settingsTitle">Tu jornada laboral</h1><p class="settings-copy">Introduce tu salario y tu horario para calcular el valor de una hora de trabajo.</p>
 <form id="settingsForm" novalidate><fieldset class="field" style="border:0;padding:0"><legend class="legend">¿Cómo introduces tu salario?</legend><div class="radio-row"><label class="radio"><input type="radio" name="salaryType" value="monthly" checked> Mensual</label><label class="radio"><input type="radio" name="salaryType" value="hourly"> Por hora</label></div></fieldset>
