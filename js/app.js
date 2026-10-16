@@ -19,6 +19,35 @@ $('settingsForm').addEventListener('submit',e=>{e.preventDefault();const next={s
 function confirmReset(){resetStage=0;$('confirmTitle').textContent='Restablecer configuración';$('confirmMessage').textContent='Se borrarán el salario, el tipo de salario, las horas al día y los días a la semana. Los recursos de la aplicación se conservarán.';$('confirmProceed').textContent='Continuar';$('confirmModal').hidden=false;lastFocus=$('resetSettings')}
 $('resetSettings').addEventListener('click',confirmReset);$('confirmCancel').addEventListener('click',()=>{$('confirmModal').hidden=true;if(lastFocus)lastFocus.focus()});$('confirmProceed').addEventListener('click',()=>{if(resetStage===0){resetStage=1;$('confirmTitle').textContent='Confirmación final';$('confirmMessage').textContent='¿Seguro que quieres borrar la configuración personal? Esta acción no se puede deshacer.';$('confirmProceed').textContent='Sí, restablecer';return}try{localStorage.removeItem(CONFIG_KEY)}catch{}config={...defaults};$('confirmModal').hidden=true;renderSettings();showScreen('settings');$('settingsError').textContent='Configuración restablecida. Introduce tus datos para continuar.';$('resetSettings').focus()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('confirmModal').hidden){$('confirmModal').hidden=true;if(lastFocus)lastFocus.focus()}});
+
+// Pantalla inicial: al pulsar COMENZAR se solicita pantalla completa desde un gesto del usuario.
+const startScreen=$('startScreen'), startButton=$('startButton'), appShell=$('appShell'), fullscreenMessage=$('fullscreenMessage');
+function isFullscreen(){return Boolean(document.fullscreenElement||document.webkitFullscreenElement)}
+function fullscreenNotice(message){fullscreenMessage.textContent=message;fullscreenMessage.hidden=!message;}
+startButton.addEventListener('click',async()=>{
+  startButton.disabled=true;
+  startButton.textContent='ABRIENDO…';
+  let fullscreenFailed=false;
+  try{
+    if(!isFullscreen()){
+      const root=document.documentElement;
+      if(root.requestFullscreen) await root.requestFullscreen({navigationUI:'hide'});
+      else if(root.webkitRequestFullscreen) root.webkitRequestFullscreen();
+      else fullscreenFailed=true;
+    }
+  }catch{fullscreenFailed=true;}
+  startScreen.hidden=true;
+  appShell.removeAttribute('inert');
+  appShell.setAttribute('aria-hidden','false');
+  if(fullscreenFailed){
+    fullscreenNotice('No se pudo activar la pantalla completa en este navegador. TiempoEsVida seguirá funcionando; el modo de pantalla completa depende de Android y de la instalación.');
+  }else{
+    fullscreenNotice('');
+  }
+  startButton.disabled=false;
+  startButton.textContent='COMENZAR';
+});
+
 // Service worker: caché de recursos para uso offline cuando se publica por HTTPS (por ejemplo, GitHub Pages).
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
   window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
