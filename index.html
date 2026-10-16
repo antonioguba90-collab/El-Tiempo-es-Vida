@@ -9,8 +9,17 @@
 <link rel="icon" href="icon.svg" type="image/svg+xml"><meta name="description" content="Descubre cuánto tiempo de trabajo representa el precio de un producto."><title>TiempoEsVida</title>
 <link rel="stylesheet" href="css/styles.css">
 </head>
-<body><div class="shell">
-<header class="top"><div class="brand"><span class="logo" aria-hidden="true">⌛</span><span>Tiempo<span style="color:var(--accent2)">EsVida</span></span></div><button class="quiet" id="settingsShortcut" type="button">Mi jornada</button></header>
+<body>
+<section id="startScreen" class="start-screen" aria-labelledby="startTitle">
+  <div class="start-content">
+    <span class="start-logo" aria-hidden="true">⌛</span>
+    <h1 id="startTitle">Tiempo<span>EsVida</span></h1>
+    <p>¿Cuánto tiempo de tu vida cuesta?</p>
+    <button id="startButton" class="start-button" type="button">COMENZAR</button>
+  </div>
+</section>
+<div class="shell" id="appShell" aria-hidden="true" inert>
+<header class="top"><div class="brand"><span class="logo" aria-hidden="true">⌛</span><span>Tiempo<span style="color:var(--accent2)">EsVida</span></span></div><div class="top-actions"><button class="quiet" id="settingsShortcut" type="button">Mi jornada</button></div></header><p id="fullscreenMessage" class="fullscreen-message" role="status" aria-live="polite" hidden></p>
 <main>
 <section class="screen active" id="priceScreen" aria-labelledby="mainTitle"><div class="hero"><p class="eyebrow">El precio en tiempo</p><h1 id="mainTitle">¿Cuánto tiempo de tu vida cuesta?</h1><p>Convierte el precio de una compra en tiempo de trabajo.</p></div>
 <div class="panel"><form id="priceForm" novalidate><div class="field"><label for="productPrice">Precio del producto (€)</label><div class="pricewrap"><span aria-hidden="true">€</span><input id="productPrice" type="text" inputmode="decimal" autocomplete="off" placeholder="Ej. 49,95" aria-describedby="priceError"></div><p id="priceError" class="err" role="alert"></p></div><div class="actions"><button type="button" class="btn" id="clearPrice">Borrar precio</button></div><p class="subtle" style="margin:13px 0 0">Introduce el precio manualmente, usando coma o punto para los céntimos (por ejemplo, 25,99). El precio no se guarda al cerrar la aplicación.</p></form>

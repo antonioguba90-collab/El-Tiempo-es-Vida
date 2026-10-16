@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tiempoesvida-v1';
+const CACHE_NAME = 'tiempoesvida-v3';
 const APP_FILES = ['./', './index.html', './css/styles.css', './js/app.js', './manifest.webmanifest', './icon.svg'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_FILES)).then(() => self.skipWaiting()));
