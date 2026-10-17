@@ -30,3 +30,8 @@ body{background:radial-gradient(ellipse at 50% -15%,#164252 0,transparent 58%),v
 .result-detail{background:#07192388;border-color:#1b4052}
 .result-detail .result-label{color:var(--accent2)}
 @media(min-width:520px){.result-details{grid-template-columns:1fr 1fr}}
+
+/* Al abrir Mi jornada, coloca la configuración inmediatamente bajo la cabecera. */
+.shell.settings-open .top{margin-bottom:16px}
+.shell.settings-open .settings-title:focus{outline:none}
+.real-basis{margin-top:8px;font-size:.75rem}
