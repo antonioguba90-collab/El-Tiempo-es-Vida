@@ -10,8 +10,49 @@ function money(n){return new Intl.NumberFormat('es-ES',{style:'currency',currenc
 function fmt(n,max=2){return new Intl.NumberFormat('es-ES',{maximumFractionDigits:max}).format(n)}
 function plural(n,s,p){return `${n} ${n===1?s:p}`}
 function formatUnits(totalMinutes,units){let remaining=Math.max(0,Math.round(totalMinutes));const values=units.map(([size,one,many])=>{const value=Math.floor(remaining/size);remaining-=value*size;return [value,one,many]});const parts=values.filter(([v])=>v>0).map(([v,one,many])=>`${fmt(v,0)} ${v===1?one:many}`);return parts.length?parts.join(', ').replace(/, ([^,]*)$/,' y $1'):'0 minutos'}
-function duration(hours){if(!Number.isFinite(hours)||hours<0)return null;const totalMinutes=Math.max(0,Math.round(hours*60));const workDays=totalMinutes/(60*Number(config.hoursPerDay));const calendarMinutes=totalMinutes*7*24/(Number(config.hoursPerDay)*Number(config.daysPerWeek));const real=formatUnits(calendarMinutes,[[525600,'año','años'],[43200,'mes','meses'],[1440,'día','días'],[60,'hora','horas'],[1,'minuto','minutos']]);const workWholeDays=Math.floor(workDays);const remainderMinutes=totalMinutes-workWholeDays*Number(config.hoursPerDay)*60;const remainderHours=Math.floor(remainderMinutes/60);const mins=Math.round(remainderMinutes%60);const workMain=plural(workWholeDays,'día','días');const remainder=[remainderHours?plural(remainderHours,'hora','horas'):'',mins?plural(mins,'minuto','minutos'):''].filter(Boolean).join(' y ');const totalHours=Math.floor(totalMinutes/60);const total=`${fmt(totalHours,0)} ${totalHours===1?'hora':'horas'} y ${totalMinutes%60} ${totalMinutes%60===1?'minuto':'minutos'}`;return {real,workMain,remainder,total,workBasis:`Según una jornada de ${fmt(config.hoursPerDay)} horas diarias`}}
-function calculate(){const input=$('productPrice'),err=$('priceError'),raw=input.value.trim();if(!raw){priceValue=null;err.textContent='';$('resultCard').hidden=true;return}const p=parseNumber(raw);if(!Number.isFinite(p)||p<0||p>1e8){priceValue=null;err.textContent='Introduce un precio válido entre 0 y 100.000.000 €.';$('resultCard').hidden=true;return}if(!validConfig(config)){err.textContent='Configura primero tu salario y tu jornada.';$('resultCard').hidden=true;return}err.textContent='';priceValue=p;const h=p/hourly();const result=duration(h);$('realTimeResult').textContent=result.real;$('timeResult').textContent=result.workMain;$('workRemainder').textContent=result.remainder;$('workBasis').textContent=result.workBasis;$('totalTimeResult').textContent=result.total;$('resultCard').hidden=false}
+function duration(hours){
+  if(!Number.isFinite(hours)||hours<0)return null;
+  const totalMinutes=Math.max(0,Math.round(hours*60));
+  const minutesPerWorkday=Number(config.hoursPerDay)*60;
+  const totalWorkdays=totalMinutes/minutesPerWorkday;
+  const wholeWorkdays=Math.floor(totalMinutes/minutesPerWorkday);
+  const remainingMinutes=totalMinutes-wholeWorkdays*minutesPerWorkday;
+  const remainderHours=Math.floor(remainingMinutes/60);
+  const remainderMins=remainingMinutes%60;
+  const workYears=Math.floor(wholeWorkdays/360);
+  const afterWorkYears=wholeWorkdays-workYears*360;
+  const workMonths=Math.floor(afterWorkYears/30);
+  const afterWorkMonths=afterWorkYears-workMonths*30;
+  const workParts=[];
+  if(workYears)workParts.push(plural(workYears,'año','años'));
+  if(workMonths)workParts.push(plural(workMonths,'mes','meses'));
+  if(afterWorkMonths)workParts.push(plural(afterWorkMonths,'día','días'));
+  if(remainderHours)workParts.push(plural(remainderHours,'hora','horas'));
+  if(remainderMins)workParts.push(plural(remainderMins,'minuto','minutos'));
+  const workTime=workParts.length?workParts.join(', ').replace(/, ([^,]*)$/,' y $1'):'0 minutos';
+  const totalHours=Math.floor(totalMinutes/60);
+  const total=`${fmt(totalHours,0)} ${totalHours===1?'hora':'horas'} y ${totalMinutes%60} ${totalMinutes%60===1?'minuto':'minutos'}`;
+  // Convierte las jornadas en tiempo natural estimado según la proporción trabajo/descanso semanal.
+  const realDays=totalWorkdays*(7/Number(config.daysPerWeek));
+  const realMinutes=Math.round(realDays*24*60);
+  const realDayCount=Math.floor(realMinutes/(24*60));
+  const remRealMinutes=realMinutes-realDayCount*24*60;
+  const realHours=Math.floor(remRealMinutes/60);
+  const realMins=remRealMinutes%60;
+  const realYears=Math.floor(realDayCount/360);
+  const afterRealYears=realDayCount-realYears*360;
+  const realMonths=Math.floor(afterRealYears/30);
+  const realDayRemainder=afterRealYears-realMonths*30;
+  const realParts=[];
+  if(realYears)realParts.push(plural(realYears,'año','años'));
+  if(realMonths)realParts.push(plural(realMonths,'mes','meses'));
+  if(realDayRemainder)realParts.push(plural(realDayRemainder,'día','días'));
+  if(realHours)realParts.push(plural(realHours,'hora','horas'));
+  if(realMins)realParts.push(plural(realMins,'minuto','minutos'));
+  const realTime=realParts.length?realParts.join(', ').replace(/, ([^,]*)$/,' y $1'):'0 minutos';
+  return {workTime,total,realTime,workBasis:`Jornadas de ${fmt(config.hoursPerDay)} horas; meses de 30 días y años de 360 días.`};
+}
+function calculate(){const input=$('productPrice'),err=$('priceError'),raw=input.value.trim();if(!raw){priceValue=null;err.textContent='';$('resultCard').hidden=true;return}const p=parseNumber(raw);if(!Number.isFinite(p)||p<0||p>1e8){priceValue=null;err.textContent='Introduce un precio válido entre 0 y 100.000.000 €.';$('resultCard').hidden=true;return}if(!validConfig(config)){err.textContent='Configura primero tu salario y tu jornada.';$('resultCard').hidden=true;return}err.textContent='';priceValue=p;const h=p/hourly();const result=duration(h);$('realTimeResult').textContent=result.realTime;$('timeResult').textContent=result.workTime;$('workBasis').textContent=result.workBasis;$('totalTimeResult').textContent=result.total;$('resultCard').hidden=false}
 function showScreen(name){$('priceScreen').classList.toggle('active',name==='price');$('settingsScreen').classList.toggle('active',name==='settings');if(name==='settings')renderSettings();else{calculate();$('productPrice').focus({preventScroll:true})}window.scrollTo({top:0,behavior:'smooth'})}
 function renderSettings(){document.querySelector(`input[name="salaryType"][value="${config.salaryType}"]`).checked=true;$('salary').value=String(config.salary);$('hoursPerDay').value=config.hoursPerDay;$('daysPerWeek').value=String(config.daysPerWeek);updateSettingsPreview()}
 function updateSettingsPreview(){const type=document.querySelector('input[name="salaryType"]:checked').value;$('salaryLabel').textContent=type==='monthly'?'Salario bruto mensual (€)':'Salario bruto por hora (€)';const c={salaryType:type,salary:$('salary').value,hoursPerDay:Number($('hoursPerDay').value),daysPerWeek:Number($('daysPerWeek').value)};if(!validConfig(c)){$('previewHourly').textContent='—';$('previewExplanation').textContent='Introduce valores válidos para ver la estimación.';return}const v=hourly(c);$('previewHourly').textContent=`${money(v)}/h`;$('previewExplanation').textContent=type==='monthly'?`Estimación anual: ${money(parseNumber(c.salary)*12)} ÷ ${fmt(c.hoursPerDay*c.daysPerWeek*52)} horas de trabajo al año.`:'Se utiliza directamente el importe por hora que has indicado.'}
