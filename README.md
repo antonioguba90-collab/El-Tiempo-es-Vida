@@ -28,3 +28,12 @@ Aplicación web modular preparada para publicarse con GitHub Pages.
 - La configuración personal se guarda en `localStorage` del origen publicado. La configuración guardada al abrir el HTML como archivo local no se transfiere automáticamente a la web publicada.
 - Restablecer configuración solo elimina salario, tipo de salario, horas/día y días/semana; no elimina el código ni los recursos de la aplicación.
 - No se usa ninguna CDN ni biblioteca externa.
+
+
+## Reglas de cálculo
+
+- Para salario mensual, se estima el salario horario dividiendo 12 mensualidades entre las horas anuales configuradas (`horas por jornada × días por semana × 52 semanas`).
+- El precio se convierte una sola vez a minutos de trabajo. Total de horas y jornadas se muestran a partir de esa misma duración.
+- El tiempo real estimado convierte las jornadas a días naturales mediante la proporción `7 / días trabajados por semana`. Los descansos no se vuelven a sumar por separado.
+- Para mostrar periodos largos se utilizan meses de 30 días y años de 360 días; son unidades de presentación, no un calendario con fechas exactas.
+- El botón **Mi jornada** abre la configuración directamente bajo la cabecera, sin el gran espacio vertical de la pantalla principal.
