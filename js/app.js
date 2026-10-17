@@ -10,69 +10,210 @@ function money(n){return new Intl.NumberFormat('es-ES',{style:'currency',currenc
 function fmt(n,max=2){return new Intl.NumberFormat('es-ES',{maximumFractionDigits:max}).format(n)}
 function plural(n,s,p){return `${n} ${n===1?s:p}`}
 function formatUnits(totalMinutes,units){let remaining=Math.max(0,Math.round(totalMinutes));const values=units.map(([size,one,many])=>{const value=Math.floor(remaining/size);remaining-=value*size;return [value,one,many]});const parts=values.filter(([v])=>v>0).map(([v,one,many])=>`${fmt(v,0)} ${v===1?one:many}`);return parts.length?parts.join(', ').replace(/, ([^,]*)$/,' y $1'):'0 minutos'}
-function duration(hours){
-  if(!Number.isFinite(hours)||hours<0)return null;
+function duration(hours) {
+    if (!Number.isFinite(hours) || hours < 0) {
+        return null;
+    }
 
-  // Una única duración base, redondeada una sola vez al minuto.
-  const totalMinutes=Math.max(0,Math.round(hours*60));
-  const minutesPerWorkday=Math.round(Number(config.hoursPerDay)*60);
-  const daysPerWeek=Number(config.daysPerWeek);
-  const totalWorkdays=totalMinutes/minutesPerWorkday;
-  const wholeWorkdays=Math.floor(totalMinutes/minutesPerWorkday);
-  const remainingWorkMinutes=totalMinutes-wholeWorkdays*minutesPerWorkday;
-  const remainderHours=Math.floor(remainingWorkMinutes/60);
-  const remainderMins=remainingWorkMinutes%60;
+    // Convertimos el tiempo de trabajo a minutos y redondeamos
+    // una sola vez para mantener coherentes todos los resultados.
+    const totalMinutes = Math.max(0, Math.round(hours * 60));
+    const minutesPerWorkday = Math.round(
+        Number(config.hoursPerDay) * 60
+    );
+    const daysPerWeek = Number(config.daysPerWeek);
+    const daysOffPerWeek = 7 - daysPerWeek;
 
-  // El tiempo en jornadas se expresa en jornadas acumuladas:
-  // 30 jornadas por mes y 12 meses (360 jornadas) por año.
-  let remainingWorkdays=wholeWorkdays;
-  const workYears=Math.floor(remainingWorkdays/360);
-  remainingWorkdays-=workYears*360;
-  const workMonths=Math.floor(remainingWorkdays/30);
-  remainingWorkdays-=workMonths*30;
-  const workParts=[];
-  if(workYears)workParts.push(plural(workYears,'año','años'));
-  if(workMonths)workParts.push(plural(workMonths,'mes','meses'));
-  if(remainingWorkdays)workParts.push(plural(remainingWorkdays,'día','días'));
-  if(remainderHours)workParts.push(plural(remainderHours,'hora','horas'));
-  if(remainderMins)workParts.push(plural(remainderMins,'minuto','minutos'));
-  const workTime=workParts.length?workParts.join(', ').replace(/, ([^,]*)$/,' y $1'):'0 minutos';
+    // --------------------------------------------------
+    // 1. TIEMPO DE JORNADA
+    // --------------------------------------------------
 
-  // El total de horas sale de esos mismos minutos, no de un segundo cálculo.
-  const totalHours=Math.floor(totalMinutes/60);
-  const total=`${fmt(totalHours,0)} ${totalHours===1?'hora':'horas'} y ${totalMinutes%60} ${totalMinutes%60===1?'minuto':'minutos'}`;
+    const wholeWorkdays = Math.floor(
+        totalMinutes / minutesPerWorkday
+    );
 
-  // Para un patrón fijo de trabajo semanal, cada día trabajado representa
-  // 7 / días trabajados por semana días naturales. No se suman descansos aparte.
-  const realMinutes=Math.round(totalWorkdays*(7/daysPerWeek)*24*60);
-  let remainingRealMinutes=realMinutes;
-  const realDayMinutes=24*60;
-  const realDays=Math.floor(remainingRealMinutes/realDayMinutes);
-  remainingRealMinutes-=realDays*realDayMinutes;
-  const realHours=Math.floor(remainingRealMinutes/60);
-  const realMins=remainingRealMinutes%60;
+    const remainingWorkMinutes =
+        totalMinutes - wholeWorkdays * minutesPerWorkday;
 
-  // Solo para mostrar: meses de 30 días y años de 360 días.
-  let remainingCalendarDays=realDays;
-  const realYears=Math.floor(remainingCalendarDays/360);
-  remainingCalendarDays-=realYears*360;
-  const realMonths=Math.floor(remainingCalendarDays/30);
-  remainingCalendarDays-=realMonths*30;
-  const realParts=[];
-  if(realYears)realParts.push(plural(realYears,'año','años'));
-  if(realMonths)realParts.push(plural(realMonths,'mes','meses'));
-  if(remainingCalendarDays)realParts.push(plural(remainingCalendarDays,'día','días'));
-  if(realHours)realParts.push(plural(realHours,'hora','horas'));
-  if(realMins)realParts.push(plural(realMins,'minuto','minutos'));
-  const realTime=realParts.length?realParts.join(', ').replace(/, ([^,]*)$/,' y $1'):'0 minutos';
+    const remainderHours = Math.floor(
+        remainingWorkMinutes / 60
+    );
 
-  return {
-    workTime,
-    total,
-    realTime,
-    workBasis:`Jornadas de ${fmt(config.hoursPerDay)} horas; 30 jornadas por mes y 360 jornadas por año.`,
-    realBasis:`Descanso proporcional a ${daysPerWeek} días de trabajo por semana; meses de 30 días y años de 360 días para mostrar el resultado.`
-  };
+    const remainderMins = remainingWorkMinutes % 60;
+
+    // Las jornadas se expresan con meses de 30 jornadas
+    // y años de 360 jornadas.
+    let remainingWorkdays = wholeWorkdays;
+
+    const workYears = Math.floor(remainingWorkdays / 360);
+    remainingWorkdays -= workYears * 360;
+
+    const workMonths = Math.floor(remainingWorkdays / 30);
+    remainingWorkdays -= workMonths * 30;
+
+    const workParts = [];
+
+    if (workYears) {
+        workParts.push(plural(workYears, 'año', 'años'));
+    }
+
+    if (workMonths) {
+        workParts.push(plural(workMonths, 'mes', 'meses'));
+    }
+
+    if (remainingWorkdays) {
+        workParts.push(plural(remainingWorkdays, 'día', 'días'));
+    }
+
+    if (remainderHours) {
+        workParts.push(plural(remainderHours, 'hora', 'horas'));
+    }
+
+    if (remainderMins) {
+        workParts.push(plural(remainderMins, 'minuto', 'minutos'));
+    }
+
+    const workTime = workParts.length
+        ? workParts.join(', ').replace(/, ([^,]*)$/, ' y $1')
+        : '0 minutos';
+
+    // --------------------------------------------------
+    // 2. TOTAL DE HORAS DE TRABAJO
+    // --------------------------------------------------
+
+    const totalHours = Math.floor(totalMinutes / 60);
+    const remainingTotalMinutes = totalMinutes % 60;
+
+    const total =
+        `${fmt(totalHours, 0)} ` +
+        `${totalHours === 1 ? 'hora' : 'horas'} y ` +
+        `${remainingTotalMinutes} ` +
+        `${remainingTotalMinutes === 1 ? 'minuto' : 'minutos'}`;
+
+    // --------------------------------------------------
+    // 3. TIEMPO REAL TRANSCURRIDO
+    // --------------------------------------------------
+    //
+    // El cómputo comienza al inicio de la primera jornada.
+    //
+    // Entre dos jornadas consecutivas se cuenta el tiempo
+    // restante del día, una vez terminadas las horas de trabajo.
+    //
+    // Al completar el bloque semanal, se añaden los días libres
+    // únicamente si todavía queda trabajo por realizar.
+    //
+    // Usamos una fórmula basada en el número de jornadas
+    // necesarias para evitar recorrer una por una las jornadas
+    // cuando el precio representa muchos años de trabajo.
+
+    const workdaysNeeded = Math.ceil(
+        totalMinutes / minutesPerWorkday
+    );
+
+    // No hay tiempo entre jornadas si el trabajo termina
+    // durante la primera jornada.
+    const workdayTransitions = Math.max(
+        0,
+        workdaysNeeded - 1
+    );
+
+    // Número de bloques semanales de descanso que se atraviesan.
+    // Si el trabajo termina exactamente al final de una semana
+    // laboral, no se añade el descanso posterior.
+    const restBlocks = Math.floor(
+        workdayTransitions / daysPerWeek
+    );
+
+    // Tiempo que transcurre entre jornadas:
+    // 24 horas menos las horas de trabajo de cada jornada.
+    const minutesBetweenWorkdays =
+        24 * 60 - minutesPerWorkday;
+
+    // Tiempo real total:
+    // trabajo efectivo + intervalos entre jornadas
+    // + días libres semanales atravesados.
+    const realMinutes =
+        totalMinutes +
+        workdayTransitions * minutesBetweenWorkdays +
+        restBlocks * daysOffPerWeek * 24 * 60;
+
+    // --------------------------------------------------
+    // 4. CONVERSIÓN DEL TIEMPO REAL A DÍAS Y HORAS
+    // --------------------------------------------------
+
+    let remainingRealMinutes = realMinutes;
+
+    const realDays = Math.floor(
+        remainingRealMinutes / (24 * 60)
+    );
+
+    remainingRealMinutes -= realDays * 24 * 60;
+
+    const realHours = Math.floor(
+        remainingRealMinutes / 60
+    );
+
+    const realMins = remainingRealMinutes % 60;
+
+    // Para mostrar periodos largos:
+    // 30 días por mes y 360 días por año.
+    let remainingCalendarDays = realDays;
+
+    const realYears = Math.floor(
+        remainingCalendarDays / 360
+    );
+
+    remainingCalendarDays -= realYears * 360;
+
+    const realMonths = Math.floor(
+        remainingCalendarDays / 30
+    );
+
+    remainingCalendarDays -= realMonths * 30;
+
+    const realParts = [];
+
+    if (realYears) {
+        realParts.push(plural(realYears, 'año', 'años'));
+    }
+
+    if (realMonths) {
+        realParts.push(plural(realMonths, 'mes', 'meses'));
+    }
+
+    if (remainingCalendarDays) {
+        realParts.push(
+            plural(remainingCalendarDays, 'día', 'días')
+        );
+    }
+
+    if (realHours) {
+        realParts.push(plural(realHours, 'hora', 'horas'));
+    }
+
+    if (realMins) {
+        realParts.push(plural(realMins, 'minuto', 'minutos'));
+    }
+
+    const realTime = realParts.length
+        ? realParts.join(', ').replace(/, ([^,]*)$/, ' y $1')
+        : '0 minutos';
+
+    return {
+        workTime,
+        total,
+        realTime,
+
+        workBasis:
+            `Jornadas de ${fmt(config.hoursPerDay)} horas; ` +
+            '30 jornadas por mes y 360 jornadas por año.',
+
+        realBasis:
+            `Cómputo desde el inicio de la primera jornada, ` +
+            `${daysPerWeek} días de trabajo consecutivos y ` +
+            `${daysOffPerWeek} días libres consecutivos por semana. ` +
+            'Meses de 30 días y años de 360 días.'
+    };
 }
 function calculate(){const input=$('productPrice'),err=$('priceError'),raw=input.value.trim();if(!raw){priceValue=null;err.textContent='';$('resultCard').hidden=true;return}const p=parseNumber(raw);if(!Number.isFinite(p)||p<0||p>1e8){priceValue=null;err.textContent='Introduce un precio válido entre 0 y 100.000.000 €.';$('resultCard').hidden=true;return}if(!validConfig(config)){err.textContent='Configura primero tu salario y tu jornada.';$('resultCard').hidden=true;return}err.textContent='';priceValue=p;const h=p/hourly();const result=duration(h);$('realTimeResult').textContent=result.realTime;$('timeResult').textContent=result.workTime;$('workBasis').textContent=result.workBasis;$('realBasis').textContent=result.realBasis;$('totalTimeResult').textContent=result.total;$('resultCard').hidden=false}
 function showScreen(name){const isSettings=name==='settings';$('priceScreen').classList.toggle('active',!isSettings);$('settingsScreen').classList.toggle('active',isSettings);appShell.classList.toggle('settings-open',isSettings);if(isSettings){renderSettings();document.documentElement.classList.add('settings-view');document.body.classList.add('settings-view');window.scrollTo({top:0,behavior:'auto'});requestAnimationFrame(()=>{$('settingsTitle').focus({preventScroll:true})})}else{document.documentElement.classList.remove('settings-view');document.body.classList.remove('settings-view');calculate();window.scrollTo({top:0,behavior:'auto'});$('productPrice').focus({preventScroll:true})}}
