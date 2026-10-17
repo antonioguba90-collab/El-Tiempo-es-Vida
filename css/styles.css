@@ -1,13 +1,13 @@
 :root {
   color-scheme: dark;
-  --bg: #100d1d;
-  --panel: #1a1628;
-  --panel2: #211b33;
-  --line: #39314d;
-  --text: #f7f4ff;
-  --muted: #b7afca;
-  --accent: #a78bfa;
-  --accent2: #c4b5fd;
+  --bg: #071923;
+  --panel: #0c2230;
+  --panel2: #102b3a;
+  --line: #1b4052;
+  --text: #f5fbff;
+  --muted: #b4cbd8;
+  --accent: #67d8e5;
+  --accent2: #8ce8ef;
   --danger: #fda4af;
   --good: #a7f3d0;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -20,7 +20,7 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: radial-gradient(ellipse at 50% -15%, #39275e 0, transparent 55%), var(--bg);
+  background: radial-gradient(ellipse at 50% -15%, #164252 0, transparent 58%), var(--bg);
   color: var(--text);
 }
 
@@ -88,12 +88,12 @@ button:focus-visible, input:focus-visible, select:focus-visible {
   font-size: 1.2rem;
 }
 
-.logo {
+.logo, .start-logo {
   width: 42px;
   height: 42px;
   border-radius: 14px;
-  background: #a78bfa20;
-  border: 1px solid #a78bfa55;
+  background: #67d8e51a;
+  border: 1px solid #67d8e555;
   display: grid;
   place-items: center;
   color: var(--accent2);
@@ -158,7 +158,7 @@ main {
 .panel {
   border: 1px solid var(--line);
   border-radius: 24px;
-  background: linear-gradient(155deg, #211a34f2, var(--panel) 65%);
+  background: linear-gradient(155deg, #0e2a39, #091d29);
   padding: clamp(18px, 5vw, 28px);
   box-shadow: 0 18px 60px #0002;
 }
@@ -180,7 +180,7 @@ main {
   min-height: 51px;
   border: 1px solid var(--line);
   border-radius: 13px;
-  background: #100d1d;
+  background: #071923;
   color: var(--text);
   padding: 12px 14px;
 }
@@ -205,12 +205,13 @@ main {
   font-weight: 750;
 }
 
-.btn.primary {
+.btn.primary, .start-button {
   width: 100%;
-  background: linear-gradient(100deg, #8b5cf6, #a78bfa);
-  color: #170d2c;
+  background: linear-gradient(100deg, #48bfce, #8ce8ef);
+  color: #06202a;
   border: 0;
   min-height: 52px;
+  box-shadow: 0 10px 30px #48bfce24;
 }
 
 .btn.secondary {
@@ -227,11 +228,11 @@ main {
 
 .result {
   margin-top: 16px;
-  padding: 25px 20px;
-  border: 1px solid #a78bfa55;
+  padding: clamp(18px, 4vw, 28px);
+  border: 1px solid #4cc8d955;
   border-radius: 22px;
-  background: #1a1530;
-  text-align: center;
+  background: linear-gradient(155deg, #0e2a39, #091d29);
+  text-align: left;
 }
 
 .result[hidden] {
@@ -239,10 +240,12 @@ main {
 }
 
 .question {
-  color: var(--accent2);
+  text-align: center;
+  color: var(--muted);
+  letter-spacing: .08em;
   font-size: .9rem;
   font-weight: 750;
-  margin: 0 0 13px;
+  margin: 0 0 18px;
 }
 
 .duration {
@@ -253,32 +256,6 @@ main {
   letter-spacing: -.035em;
   line-height: 1.35;
   overflow-wrap: anywhere;
-}
-
-.total-time {
-  border-top: 1px solid var(--line);
-  margin-top: 22px;
-  padding-top: 18px;
-}
-
-.total-label {
-  margin: 0 0 7px;
-  color: var(--muted);
-  font-size: .82rem;
-  font-weight: 700;
-}
-
-.total-value {
-  margin: 0;
-  font-size: clamp(1.15rem, 4.7vw, 1.55rem);
-  font-weight: 850;
-  line-height: 1.35;
-}
-
-.total-decimal {
-  margin: 6px 0 0;
-  color: var(--muted);
-  font-size: .86rem;
 }
 
 .err {
@@ -340,11 +317,11 @@ main {
   border: 1px solid var(--line);
   border-radius: 13px;
   padding: 13px;
-  background: #100d1d;
+  background: #071923;
 }
 
 .preview {
-  background: #100d1d;
+  background: #071923;
   border: 1px solid var(--line);
   border-radius: 14px;
   padding: 15px;
@@ -415,7 +392,7 @@ main {
   display: grid;
   place-items: center;
   padding: 24px;
-  background: radial-gradient(ellipse at 50% 5%, #39275e 0, transparent 58%), var(--bg);
+  background: radial-gradient(ellipse at 50% 5%, #164252 0, transparent 58%), var(--bg);
   min-height: 100vh;
   min-height: 100dvh;
   padding-top: env(safe-area-inset-top, 24px);
@@ -438,12 +415,6 @@ main {
 .start-logo {
   width: 72px;
   height: 72px;
-  display: grid;
-  place-items: center;
-  border: 1px solid #a78bfa55;
-  border-radius: 24px;
-  background: #a78bfa20;
-  color: var(--accent2);
   font-size: 2.6rem;
   margin-bottom: 26px;
 }
@@ -471,14 +442,10 @@ main {
   width: 100%;
   min-height: 58px;
   margin-top: clamp(48px, 12vh, 90px);
-  border: 0;
   border-radius: 16px;
-  background: linear-gradient(100deg, #8b5cf6, #a78bfa);
-  color: #170d2c;
   font-size: 1rem;
   font-weight: 850;
   letter-spacing: .08em;
-  box-shadow: 0 10px 30px #8b5cf633;
   transition: transform .15s ease, filter .15s ease;
 }
 
@@ -497,29 +464,35 @@ main {
 
 /* Resultados especiales */
 .real-time {
-  padding: 20px 12px 24px;
-  border: 1px solid #a78bfa44;
+  padding: clamp(22px, 5vw, 34px) clamp(18px, 5vw, 30px);
+  border: 1px solid #48c8d966;
   border-radius: 18px;
-  background: linear-gradient(145deg, #282044, #1c172e);
+  background: linear-gradient(140deg, #123747, #0d2938);
+  text-align: left;
+  box-shadow: inset 0 1px #ffffff08;
 }
 
-.result-label {
+.real-time .result-label {
+  font-size: .85rem;
+  letter-spacing: .12em;
   margin: 0 0 10px;
   color: var(--accent2);
-  font-size: .76rem;
   font-weight: 850;
-  letter-spacing: .09em;
 }
 
 .real-time .duration {
-  font-size: clamp(1.65rem, 7vw, 2.65rem);
-  line-height: 1.2;
+  font-size: clamp(1.8rem, 7.5vw, 3.15rem);
+  font-weight: 900;
+  letter-spacing: -.045em;
+  line-height: 1.16;
+  margin: 12px 0 0;
+  overflow-wrap: anywhere;
 }
 
 .real-caption {
-  color: var(--muted);
-  margin: 12px 0 0;
   font-size: .9rem;
+  margin-top: 14px;
+  color: var(--muted);
 }
 
 .result-details {
@@ -532,9 +505,13 @@ main {
 
 .result-detail {
   padding: 18px;
-  border: 1px solid var(--line);
+  border: 1px solid #1b4052;
   border-radius: 16px;
-  background: #100d1d66;
+  background: #07192388;
+}
+
+.result-detail .result-label {
+  color: var(--accent2);
 }
 
 .detail-value {
@@ -552,12 +529,21 @@ main {
   line-height: 1.45;
 }
 
+.real-basis {
+  margin-top: 8px;
+  font-size: .75rem;
+}
+
 /* ==========================================================================
    CORRECCIÓN DE POSICIONAMIENTO DE CONFIGURACIÓN
    ========================================================================== */
 
 html, body {
   scroll-behavior: auto;
+}
+
+html.settings-view, body.settings-view {
+  scroll-padding-top: 0 !important;
 }
 
 .shell.settings-open {
@@ -571,6 +557,10 @@ html, body {
 
 .shell.settings-open .top + .fullscreen-message {
   margin: 0 !important;
+}
+
+.shell.settings-open .fullscreen-message {
+  display: none !important;
 }
 
 .shell.settings-open main {
