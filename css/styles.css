@@ -46,3 +46,29 @@ body{background:radial-gradient(ellipse at 50% -15%,#164252 0,transparent 58%),v
   .shell.settings-open .top { row-gap: 8px; }
   .shell.settings-open .top-actions { margin-top: 0; }
 }
+
+
+/* Ajuste definitivo de Mi jornada: elimina el hueco vertical al abrir la configuración. */
+html, body { scroll-behavior: auto; }
+.shell.settings-open { padding-top: max(8px, env(safe-area-inset-top, 8px)) !important; }
+.shell.settings-open .top { margin: 0 0 8px !important; padding: 0 !important; }
+.shell.settings-open .top + .fullscreen-message { margin: 0 !important; }
+.shell.settings-open main { margin: 0 !important; padding: 0 !important; flex: 0 0 auto !important; }
+.shell.settings-open #settingsScreen { display: block !important; margin: 0 !important; padding: 0 !important; }
+.shell.settings-open #settingsScreen .panel { margin: 0 !important; }
+.shell.settings-open #settingsScreen .eyebrow { margin-top: 0 !important; }
+.shell.settings-open .foot { padding-top: 16px; }
+@media (max-width: 430px) {
+  .shell.settings-open { width: calc(100% - 24px); }
+  .shell.settings-open .top { gap: 8px !important; }
+  .shell.settings-open .top-actions { margin: 0 !important; }
+}
+
+/* Layout único de configuración: idéntico al entrar por primera vez o desde Mi jornada. */
+html.settings-view, body.settings-view { scroll-padding-top: 0 !important; }
+#appShell.settings-open { padding-top: max(8px, env(safe-area-inset-top, 8px)) !important; }
+#appShell.settings-open > .top { margin-top: 0 !important; margin-bottom: 8px !important; }
+#appShell.settings-open > main { margin-top: 0 !important; padding-top: 0 !important; flex: 0 0 auto !important; }
+#appShell.settings-open #settingsScreen.active { display: block !important; margin: 0 !important; padding: 0 !important; }
+#appShell.settings-open #settingsScreen.active > .panel { margin: 0 !important; }
+#appShell.settings-open #settingsScreen .settings-title { scroll-margin: 0 !important; }
