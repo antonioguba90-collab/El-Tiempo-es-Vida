@@ -14,3 +14,19 @@
 
 /* Resultado: el tiempo real destaca y las otras dos medidas quedan como resumen. */
 .real-time{padding:20px 12px 24px;border:1px solid #a78bfa44;border-radius:18px;background:linear-gradient(145deg,#282044,#1c172e)}.result-label{margin:0 0 10px;color:var(--accent2);font-size:.76rem;font-weight:850;letter-spacing:.09em}.real-time .duration{font-size:clamp(1.65rem,7vw,2.65rem);line-height:1.2}.real-caption{color:var(--muted);margin:12px 0 0;font-size:.9rem}.result-details{display:grid;grid-template-columns:1fr;gap:12px;margin-top:14px;text-align:left}.result-detail{padding:18px;border:1px solid var(--line);border-radius:16px;background:#100d1d66}.detail-value{margin:0;color:var(--text);font-size:clamp(1.25rem,4.8vw,1.7rem);font-weight:850;line-height:1.35}.detail-note{margin:6px 0 0;color:var(--muted);font-size:.84rem;line-height:1.45}.result .question{margin-bottom:18px}@media(min-width:520px){.result-details{grid-template-columns:1fr 1fr}.result-detail{min-width:0}}
+
+/* Jerarquía visual: el tiempo real es el resultado principal. */
+:root{--bg:#071923;--panel:#0c2230;--panel2:#102b3a;--line:#1b4052;--text:#f5fbff;--muted:#b4cbd8;--accent:#67d8e5;--accent2:#8ce8ef}
+body{background:radial-gradient(ellipse at 50% -15%,#164252 0,transparent 58%),var(--bg)}
+.logo,.start-logo{background:#67d8e51a;border-color:#67d8e555;color:var(--accent2)}
+.btn.primary,.start-button{background:linear-gradient(100deg,#48bfce,#8ce8ef);color:#06202a;box-shadow:0 10px 30px #48bfce24}
+.result{padding:clamp(18px,4vw,28px);border-color:#4cc8d955;background:linear-gradient(155deg,#0e2a39,#091d29);text-align:left}
+.result .question{text-align:center;color:var(--muted);letter-spacing:.08em}
+.real-time{padding:clamp(22px,5vw,34px) clamp(18px,5vw,30px);border-color:#48c8d966;background:linear-gradient(140deg,#123747,#0d2938);text-align:left;box-shadow:inset 0 1px #ffffff08}
+.real-time .result-label{font-size:.85rem;letter-spacing:.12em}
+.real-time .duration{font-size:clamp(1.8rem,7.5vw,3.15rem);font-weight:900;letter-spacing:-.045em;line-height:1.16;margin:12px 0 0;overflow-wrap:anywhere}
+.real-caption{font-size:.9rem;margin-top:14px}
+.result-details{margin-top:14px}
+.result-detail{background:#07192388;border-color:#1b4052}
+.result-detail .result-label{color:var(--accent2)}
+@media(min-width:520px){.result-details{grid-template-columns:1fr 1fr}}
