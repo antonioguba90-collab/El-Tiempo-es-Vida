@@ -643,3 +643,29 @@ html.settings-view, body.settings-view {
     to { opacity: 1; transform: none; }
   }
 }
+
+/* Advertencia de la pantalla inicial: conserva el estilo original */
+.warning-text {
+  margin: 18px 0 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.warning-subtitle {
+  margin: 0 0 18px;
+  font-size: 0.85rem;
+  text-align: center;
+  opacity: 0.75;
+}
+
+@media (max-width: 400px) {
+  .warning-text {
+    font-size: 0.82rem;
+  }
+
+  .warning-subtitle {
+    font-size: 0.78rem;
+  }
+}
+
